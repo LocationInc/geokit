@@ -97,6 +97,7 @@ class GoogleGeocoderTest < BaseGeocoderTest #:nodoc: all
     assert res.is_us?
     assert_equal "San Francisco, CA, USA", res.full_address
     assert_equal "google", res.provider
+    assert_nil res.sublocality
     end
   end
 
@@ -109,6 +110,7 @@ class GoogleGeocoderTest < BaseGeocoderTest #:nodoc: all
      assert_equal "682 Prospect Place", res.street_address
      assert_equal "NY", res.state
      assert_equal "Brooklyn", res.city
+     assert_equal "Brooklyn", res.sublocality
      assert_equal "40.6745812,-73.9541582", res.ll
      assert res.is_us?
      assert_equal "682 Prospect Place, Brooklyn, NY 11216, USA", res.full_address

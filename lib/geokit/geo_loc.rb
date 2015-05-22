@@ -29,6 +29,9 @@ module Geokit
                   :state_name, :state_code, :zip, :country_code, :country
     attr_accessor :full_address, :all, :district, :province, :sub_premise,
                   :neighborhood
+    #Store extra fields in google geocoding 
+    attr_accessor :point_of_interest, :establishment, :neighborhood,
+                  :colloquial_area, :sublocality
     # Attributes set upon return from geocoding. Success will be true for
     # successful geocode lookups. The provider will be set to the name of the
     # providing geocoder. Finally, precision is an indicator of the accuracy of

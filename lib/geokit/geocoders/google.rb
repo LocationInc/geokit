@@ -156,6 +156,8 @@ module Geokit
         addr["address_components"].each do |comp|
           types = comp["types"]
           case
+          when types.include?("colloquial_area")
+            loc.colloquial_area = comp['long_name']
           when types.include?("subpremise")
             loc.sub_premise = comp["short_name"]
           when types.include?("street_number")
@@ -177,9 +179,14 @@ module Geokit
             loc.district = comp["long_name"]
           when types.include?("neighborhood")
             loc.neighborhood = comp["short_name"]
+          when types.include?('point_of_interest')
+            loc.point_of_interest = comp['short_name']
+          when types.include?('establishment')
+            loc.establishment = comp['short_name']
           # Use either sublocality or admin area level 3 if google does not return a city
           when types.include?("sublocality")
             loc.city = comp["long_name"] if loc.city.nil?
+            loc.sublocality = comp["long_name"]
           when types.include?("administrative_area_level_3")
             loc.city = comp["long_name"] if loc.city.nil?
           end
