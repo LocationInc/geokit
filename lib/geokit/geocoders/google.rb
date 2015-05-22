@@ -200,14 +200,12 @@ module Geokit
         if loc.sub_premise
           loc.accuracy = 9
           loc.precision = "building"
-        end
-        if loc.street_name && loc.precision == "city"
+        elsif loc.street_name && loc.accuracy < 7
           loc.precision = "street"
           loc.accuracy = 7
-        end
-        if addr["types"].include?("postal_code")
+        elsif addr["types"].include?("postal_code")
           loc.precision = "postal_code"
-          loc.accuracy = 6
+          loc.accuracy = 5
         end
       end
     end

@@ -6,6 +6,8 @@ class GoogleGeocoderTest < BaseGeocoderTest #:nodoc: all
     super
     @full_address = "100 Spear St Apt. 5, San Francisco, CA, 94105-1522, US"
     @full_address_short_zip = "100 Spear St Apt. 5, San Francisco, CA, 94105, US"
+    @address_zip_only = "94105"
+    @address_street_level = "Spear St, San Francisco, CA, 94105, US"
     @google_full_hash = {street_address: "100 Spear St Apt. 5", city: "San Francisco", state: "CA", zip: "94105", country_code: "US"}
     @google_city_hash = {city: "San Francisco", state: "CA"}
 
@@ -142,12 +144,33 @@ class GoogleGeocoderTest < BaseGeocoderTest #:nodoc: all
     end
   end
 
+  def test_google_street_accuracy
+    VCR.use_cassette("google_street", record: :new_episodes) do
+      url = "https://maps.google.com/maps/api/geocode/json?sensor=false&address=#{Geokit::Inflector.url_escape(@address_street_level)}"
+    TestHelper.expects(:last_url).with(url)
+    res = Geokit::Geocoders::GoogleGeocoder.geocode(@address_street_level)
+    assert_equal 7, res.accuracy
+    assert_equal "street", res.precision
+    end
+  end
+
   def test_google_city_accuracy
     VCR.use_cassette("google_city") do
       url = "https://maps.google.com/maps/api/geocode/json?sensor=false&address=#{Geokit::Inflector.url_escape(@address)}"
     TestHelper.expects(:last_url).with(url)
     res = Geokit::Geocoders::GoogleGeocoder.geocode(@address)
     assert_equal 4, res.accuracy
+    assert_equal "city", res.precision
+    end
+  end
+
+  def test_google_zip_accuracy
+    VCR.use_cassette("google_zip_only", record: :new_episodes) do
+      url = "https://maps.google.com/maps/api/geocode/json?sensor=false&address=#{Geokit::Inflector.url_escape(@address_zip_only)}"
+    TestHelper.expects(:last_url).with(url)
+    res = Geokit::Geocoders::GoogleGeocoder.geocode(@address_zip_only)
+    assert_equal 5, res.accuracy
+    assert_equal 'postal_code', res.precision
     end
   end
 
